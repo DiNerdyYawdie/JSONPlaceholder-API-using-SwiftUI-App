@@ -2,23 +2,25 @@
 
 import Foundation
 
-class PhotosListViewModel: ObservableObject {
+class CommentsListViewModel: ObservableObject {
     
-    @Published var photos: [PhotoModel] = []
+    @Published var comments: [Comment] = []
     
     @Published var showErrorAlert: Bool = false
     @Published var errorMessage: String = ""
     
     @Published var isLoading: Bool = false
     
-    let services: APIServices
+    let service: APIServices
+    let postID: String
     
-    init(services: APIServices = APIServicesImpl()) {
-        self.services = services
+    init(postID: String, service: APIServices) {
+        self.postID = postID
+        self.service = service
     }
     
     @MainActor
-    func fetchPhotos() async {
+    func fetchComments() async {
         
         defer {
             isLoading = false
@@ -26,13 +28,11 @@ class PhotosListViewModel: ObservableObject {
         
         do {
             isLoading = true
-            photos = try await services.fetchPhotos(endpoint: .photos)
-    
+            comments = try await service.fetchCommentsByPostID(endpoint: .commentsByPostID(postID))
+            
         } catch {
             if let customError = error as? APIServiceError {
                 errorMessage = customError.errorMessage
-            } else {
-                errorMessage = error.localizedDescription
             }
             
             showErrorAlert.toggle()

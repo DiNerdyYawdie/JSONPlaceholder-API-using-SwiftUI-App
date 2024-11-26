@@ -2,12 +2,12 @@
 
 import Foundation
 
-class PhotosListViewModel: ObservableObject {
+class UsersListViewModel: ObservableObject {
     
-    @Published var photos: [PhotoModel] = []
+    @Published var users: [UserModel] = []
     
-    @Published var showErrorAlert: Bool = false
     @Published var errorMessage: String = ""
+    @Published var showErrorAlert: Bool = false
     
     @Published var isLoading: Bool = false
     
@@ -18,21 +18,19 @@ class PhotosListViewModel: ObservableObject {
     }
     
     @MainActor
-    func fetchPhotos() async {
+    func fetchUsers() async {
         
         defer {
             isLoading = false
         }
         
         do {
-            isLoading = true
-            photos = try await services.fetchPhotos(endpoint: .photos)
-    
+           isLoading = true
+            users = try await services.fetchUsers(endpoint: .users)
+            
         } catch {
             if let customError = error as? APIServiceError {
                 errorMessage = customError.errorMessage
-            } else {
-                errorMessage = error.localizedDescription
             }
             
             showErrorAlert.toggle()

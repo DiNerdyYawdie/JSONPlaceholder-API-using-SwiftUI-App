@@ -13,6 +13,15 @@ struct ContentView: View {
                         Text("Photos")
                     }
                 }
+            
+            UsersListView()
+                .tabItem {
+                    VStack {
+                        Image(systemName: "person")
+                        
+                        Text("Users")
+                    }
+                }
         }
         
     }
